@@ -16,11 +16,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly, nonatomic) NSArray *savedMovies;
 @property (readonly, nonatomic) SFOMovie *currentMovie;
+@property (strong, nonatomic) NSMutableArray<SFOMovie*> *results;
 
 - (void)loadFromPersistentStore;
-- (void)saveMovie:(SFOMovie *)artist;
-- (void)removeMovie:(SFOMovie *)artist;
-- (void)searchForMovieWithName:(NSString *)name completion:(void (^)(SFOMovie *artist, NSError *error))completion;
+- (void)saveMovie:(SFOMovie *)movie;
+- (void)removeMovie:(SFOMovie *)movie;
+- (void)searchiTunesWithTerm:(NSString *)searchTerm completion:(void (^)(SFOMovie *movie, NSError *error))completion;
+- (void)parseSearchResults:(NSData *)data response:(NSURLResponse *)response;
 
 @end
 

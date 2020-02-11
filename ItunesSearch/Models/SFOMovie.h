@@ -13,14 +13,16 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SFOMovie : NSObject
 
 //@property (nonatomic, copy) NSString *name;
-@property (nonatomic) int year;
-@property (nonatomic, copy)NSString *about;
+//@property (nonatomic) int year;
+@property (nonatomic, copy)NSString *collection;
+@property (nonatomic, copy)NSString *imageUrl;
 @property (nullable, nonatomic, copy) NSString *name;
 
 
 - (instancetype)initWithName:(NSString *)name
-                        year:(int)year
-                       about:(NSString *)about;
+//                        year:(int)year
+                  collection:(NSString *)collection
+                    imageUrl:(NSString *)imageUrl;
 
 @end
 

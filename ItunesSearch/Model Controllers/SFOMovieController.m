@@ -18,6 +18,8 @@
 
 @implementation SFOMovieController
 
+// MARK: - Init
+
 - (instancetype)init {
     self = [super init];
     if (self) {
@@ -26,9 +28,15 @@
     return self;
 }
 
+// MARK: - Properties
+
 - (NSArray *)savedMovies {
     return [self.internalSavedMovies copy];
 }
+
+static NSString * const baseURLString = @"https://itunes.apple.com/search?term=%@";
+
+// MARK: - Operations
 
 - (void)saveMovie:(SFOMovie *)movie {
     NSLog(@"saveArtist");
@@ -42,9 +50,8 @@
 }
 
 - (NSURL *)persistentFileURL {
-    
     NSURL *documentDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] firstObject];
-    NSString *fileName = @"artists.json";
+    NSString *fileName = @"movies.json";
     return [documentDirectory URLByAppendingPathComponent:fileName];
 }
 
@@ -58,14 +65,14 @@
         [moviesArray addObject:movieDict];
     }
     NSDictionary *moviesDictionary = @{
-        @"artists" : moviesArray
+        @"movies" : moviesArray
     };
     bool successfulSave = [moviesDictionary writeToURL:url error:nil];
     if (successfulSave) {
         NSLog(@"saved");
         return;
     } else {
-        NSLog(@"Error saving artists: %@", saveError);
+        NSLog(@"Error saving movies: %@", saveError);
     }
 }
 
@@ -74,8 +81,8 @@
     
     NSDictionary *moviesDictionary = [NSDictionary dictionaryWithContentsOfURL:url];
     
-    if (![moviesDictionary[@"artists"]  isEqual: @""]) {
-        NSArray *movieDictionaries = moviesDictionary[@"artists"];
+    if (![moviesDictionary[@"movies"]  isEqual: @""]) {
+        NSArray *movieDictionaries = moviesDictionary[@"movies"];
         for (NSDictionary *movieDictionary in movieDictionaries) {
             SFOMovie *movie = [[SFOMovie alloc] initWithDictionary:movieDictionary];
             [self.internalSavedMovies addObject:movie];
@@ -83,63 +90,9 @@
     }
 }
 
+// MARK: - Search
 
-static NSString * const baseURLString = @"https://www.theaudiodb.com/api/v1/json/1/search.php";
-
-
-
-
-
-
-
-
-
-
-
-- (void)searchForMovieWithName:(NSString *)name completion:(void (^)(SFOMovie *movie, NSError *error))completion {
-    
-    NSURL *baseURL = [NSURL URLWithString:baseURLString];
-    NSURLComponents *components = [NSURLComponents componentsWithURL:baseURL resolvingAgainstBaseURL:YES];
-    
-    NSURLQueryItem *searchItem = [NSURLQueryItem queryItemWithName:@"s" value:name];
-    [components setQueryItems:@[searchItem]];
-    NSURL *url = [components URL];
-    
-    [[[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        
-        if (error) {
-            completion(nil, error);
-            return;
-        }
-        NSError *jsonError = nil;
-        NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-        
-        if (jsonError) {
-            completion(nil, jsonError);
-            return;
-        }
-        
-        if (![dictionary isKindOfClass:[NSDictionary class]]) {
-            NSLog(@"JSON was not a Dictionary as expected");
-            completion(nil, [[NSError alloc] init]);
-            return;
-        }
-        
-        if (dictionary[@"artists"] != [NSNull null]) {
-            NSArray *movieDictionaries = dictionary[@"artists"];
-            NSDictionary *movieDictionary = movieDictionaries.firstObject;
-            SFOMovie *movie = [[SFOMovie alloc] initWithDictionary:movieDictionary];
-            
-            completion(movie, nil);
-        }
-    }] resume];
-}
-
-
-
-// MARK: - Network Calls
-
-- (void)searchiTunesWithTerm:(NSString *)searchTerm {
+- (void)searchiTunesWithTerm:(NSString *)searchTerm completion:(void (^)(SFOMovie *movie, NSError *error))completion {
     NSString *stringURL = [NSString stringWithFormat:@"https://itunes.apple.com/search?term=%@", searchTerm];
     NSLog(@"making request: %@", stringURL);
     NSURL *url = [NSURL URLWithString:[stringURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
@@ -147,28 +100,37 @@ static NSString * const baseURLString = @"https://www.theaudiodb.com/api/v1/json
     NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         
         if (error) {
-            [self handleError:error];
+//            [self handleError:error];
+            completion(nil, error);
         } else {
             [self parseSearchResults:data response:response];
+            completion(nil, nil);
         }
     }];
     [task resume];
 }
 
 - (void)parseSearchResults:(NSData *)data response:(NSURLResponse *)response {
-    NSLog(@"%@", response.MIMEType);
-    NSLog(@"%@", response.textEncodingName);
-    
     NSError *error = nil;
     
     if (error) {
-        [self handleError:error];
+//        [self handleError:error];
     } else {
-        id result = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-        self.results = ((NSDictionary *)result)[@"results"];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:kSearchCompleteNotification object:nil];
-        NSLog(@"%@", self.results);
+        NSDictionary * result = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+//        NSLog(@"%@", result);
+        NSMutableArray <SFOMovie*> *allMovies = [NSMutableArray new];
+        NSArray * results = result[@"results"]; //artistName
+        for (NSDictionary * movieDict in results) {
+            NSLog(@"%@", movieDict);
+            NSString * name = movieDict[@"artistName"];
+            NSString * collectionName = movieDict[@"collectionName"];
+            NSString * avatarUrl = movieDict[@"artworkUrl100"];
+
+            SFOMovie * myMovie = [[SFOMovie alloc] initWithName:name collection:collectionName imageUrl:avatarUrl];
+            // Append movie
+            [allMovies addObject:myMovie];
+        }
+        self.results = allMovies; //((NSDictionary *)result)[@"results"];
     }
 }
 

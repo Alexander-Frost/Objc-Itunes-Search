@@ -43,7 +43,7 @@
 
     if (self.movie) {
         name = self.movie.name;
-        bio = self.movie.about;
+        bio = self.movie.imageUrl;
         self.navigationItem.title = name;
     }
 

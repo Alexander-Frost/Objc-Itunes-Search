@@ -11,13 +11,14 @@
 @implementation SFOMovie
 
 - (instancetype)initWithName:(NSString *)name
-                        year:(int)year
-                       about:(NSString *)about {
+//                        year:(int)year
+                  collection:(NSString *)collection
+                    imageUrl:(NSString *)imageUrl {
     self = [super init];
     if (self) {
         _name = [name copy];
-        _year = year;
-        _about = [about copy];
+        _collection = [collection copy];
+        _imageUrl = [imageUrl copy];
     }
     return self;
 }
