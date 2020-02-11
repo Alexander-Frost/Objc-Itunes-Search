@@ -38,18 +38,35 @@
 
 - (void)updateViews {
     __block NSString *name = @"";
-    __block NSString *yearFormed = @"";
-    __block NSString *bio = @"";
+    __block NSString *collection = @"";
 
     if (self.movie) {
         name = self.movie.name;
-        bio = self.movie.imageUrl;
+        collection = self.movie.collection;
         self.navigationItem.title = name;
     }
 
     self.titleLbl.text = name;
-    self.directorLbl.text = bio;
-//    self.miniImageView.image = bio;
+    self.directorLbl.text = collection;
+    
+    [self loadImage];
+}
+
+- (void)loadImage {
+    NSString *strImgURLAsString = self.movie.imageUrl; // @"imageURL";
+    [strImgURLAsString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSURL *imgURL = [NSURL URLWithString:strImgURLAsString];
+    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:imgURL] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        if (!connectionError) {
+            UIImage *img = [[UIImage alloc] initWithData:data];
+            // pass the img to your imageview
+            self.miniImageView.image = img;
+            self.miniImageView.layer.cornerRadius = 8.0;
+            self.miniImageView.layer.masksToBounds = true;
+        }else{
+            NSLog(@"%@",connectionError);
+        }
+    }];
 }
 
 
