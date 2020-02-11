@@ -23,7 +23,7 @@ static NSString *kSearchCompleteNotification = @"searchComplete";
 
 @implementation ViewController
 
-// MARK: - VC Lifecycle
+#pragma mark - VC Lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -53,7 +53,7 @@ static NSString *kSearchCompleteNotification = @"searchComplete";
     }
 }
 
-// MARK: - UISearchBarDelegate
+#pragma mark - UISearchBarDelegate
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     NSString *searchTerm = searchBar.text;
@@ -72,7 +72,7 @@ static NSString *kSearchCompleteNotification = @"searchComplete";
     [self.navigationController presentViewController:alert animated:YES completion:nil];
 }
 
-// MARK: - UITableView Datasource
+#pragma mark - UITableView Datasource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.movieController.results.count;
@@ -89,7 +89,7 @@ static NSString *kSearchCompleteNotification = @"searchComplete";
     return cell;
 }
 
-// MARK: - Notifcations
+#pragma mark - Notifcations
 
 - (void)registerForNotifications {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadMyTableView) name:kSearchCompleteNotification object:nil];

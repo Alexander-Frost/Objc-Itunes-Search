@@ -18,7 +18,7 @@
 
 @implementation SFOMovieController
 
-// MARK: - Init
+#pragma mark - Init
 
 - (instancetype)init {
     self = [super init];
@@ -28,7 +28,7 @@
     return self;
 }
 
-// MARK: - Properties
+#pragma mark - Properties
 
 static NSString * const baseURLString = @"https://itunes.apple.com/search?term=%@";
 
@@ -36,7 +36,7 @@ static NSString * const baseURLString = @"https://itunes.apple.com/search?term=%
     return [self.internalSavedMovies copy];
 }
 
-// MARK: - Operations
+#pragma mark - Operations
 
 - (void)saveMovie:(SFOMovie *)movie {
     NSLog(@"saveMovie");
@@ -90,7 +90,7 @@ static NSString * const baseURLString = @"https://itunes.apple.com/search?term=%
     }
 }
 
-// MARK: - Search
+#pragma mark - Search
 
 - (void)searchiTunesWithTerm:(NSString *)searchTerm completion:(void (^)(SFOMovie *movie, NSError *error))completion {
     NSString *stringURL = [NSString stringWithFormat:@"https://itunes.apple.com/search?term=%@", searchTerm];

@@ -16,7 +16,7 @@
 
 @implementation DetailViewController
 
-// MARK: - Actions
+#pragma mark - Actions
 
 - (IBAction)saveBtnPressed:(UIBarButtonItem *)sender {
     if (self.movie) {
@@ -26,7 +26,7 @@
     }
 }
 
-// MARK: - VC Lifecycle
+#pragma mark - VC Lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -34,7 +34,7 @@
     [self updateViews];
 }
 
-// MARK: - Setup UI
+#pragma mark - Setup UI
 
 - (void)updateViews {
     __block NSString *name = @"";

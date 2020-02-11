@@ -13,12 +13,12 @@
 
 @interface DetailViewController : UIViewController
 
-// MARK: - Properties
+#pragma mark -Properties
 
 @property SFOMovie* movie;
 @property SFOMovieController *movieController;
 
-// MARK: - Outlets
+#pragma mark - Outlets
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLbl;
 @property (weak, nonatomic) IBOutlet UILabel *directorLbl;

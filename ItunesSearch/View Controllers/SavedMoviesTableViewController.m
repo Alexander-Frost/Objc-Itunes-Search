@@ -16,6 +16,8 @@
 
 @implementation SavedMoviesTableViewController
 
+#pragma mark - VC Lifecycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
