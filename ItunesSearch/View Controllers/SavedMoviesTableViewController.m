@@ -42,7 +42,7 @@
     
     SFOMovie *movie = self.movieController.savedMovies[indexPath.row];
     cell.textLabel.text = movie.name;
-    cell.detailTextLabel.text = movie.imageUrl;
+    cell.detailTextLabel.text = movie.collection;
     
     return cell;
 }
