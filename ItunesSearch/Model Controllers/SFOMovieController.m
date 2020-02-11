@@ -39,7 +39,7 @@ static NSString * const baseURLString = @"https://itunes.apple.com/search?term=%
 // MARK: - Operations
 
 - (void)saveMovie:(SFOMovie *)movie {
-    NSLog(@"saveArtist");
+    NSLog(@"saveMovie");
     [self.internalSavedMovies addObject:movie];
     [self saveToPersistentStore];
 }
