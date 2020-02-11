@@ -53,13 +53,13 @@
 }
 
 - (void)loadImage {
-    NSString *strImgURLAsString = self.movie.imageUrl; // @"imageURL";
+    NSString *strImgURLAsString = self.movie.imageUrl;
     [strImgURLAsString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *imgURL = [NSURL URLWithString:strImgURLAsString];
     [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:imgURL] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         if (!connectionError) {
             UIImage *img = [[UIImage alloc] initWithData:data];
-            // pass the img to your imageview
+
             self.miniImageView.image = img;
             self.miniImageView.layer.cornerRadius = 8.0;
             self.miniImageView.layer.masksToBounds = true;

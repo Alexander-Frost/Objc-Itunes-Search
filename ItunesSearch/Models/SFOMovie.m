@@ -11,7 +11,6 @@
 @implementation SFOMovie
 
 - (instancetype)initWithName:(NSString *)name
-//                        year:(int)year
                   collection:(NSString *)collection
                     imageUrl:(NSString *)imageUrl {
     self = [super init];

@@ -30,11 +30,11 @@
 
 // MARK: - Properties
 
+static NSString * const baseURLString = @"https://itunes.apple.com/search?term=%@";
+
 - (NSArray *)savedMovies {
     return [self.internalSavedMovies copy];
 }
-
-static NSString * const baseURLString = @"https://itunes.apple.com/search?term=%@";
 
 // MARK: - Operations
 
@@ -117,9 +117,9 @@ static NSString * const baseURLString = @"https://itunes.apple.com/search?term=%
 //        [self handleError:error];
     } else {
         NSDictionary * result = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-//        NSLog(@"%@", result);
+        NSLog(@"%@", result);
         NSMutableArray <SFOMovie*> *allMovies = [NSMutableArray new];
-        NSArray * results = result[@"results"]; //artistName
+        NSArray * results = result[@"results"];
         for (NSDictionary * movieDict in results) {
             NSLog(@"%@", movieDict);
             NSString * name = movieDict[@"artistName"];
@@ -127,10 +127,9 @@ static NSString * const baseURLString = @"https://itunes.apple.com/search?term=%
             NSString * avatarUrl = movieDict[@"artworkUrl100"];
 
             SFOMovie * myMovie = [[SFOMovie alloc] initWithName:name collection:collectionName imageUrl:avatarUrl];
-            // Append movie
             [allMovies addObject:myMovie];
         }
-        self.results = allMovies; //((NSDictionary *)result)[@"results"];
+        self.results = allMovies;
     }
 }
 
